@@ -75,3 +75,7 @@ export default function Home({ clientId }) {
     </section>
   );
 }
+
+Home.propTypes = {
+  clientId: PropTypes.string.isRequired
+};

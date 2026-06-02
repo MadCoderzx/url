@@ -35,8 +35,8 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/url-shortener-backend:latest
-            ghcr.io/${{ github.repository }}/url-shortener-backend:${{ github.sha }}
+            ${{ vars.REGISTRY }}/${{ vars.IMAGE_OWNER }}/url-shortener-backend:latest
+            ${{ vars.REGISTRY }}/${{ vars.IMAGE_OWNER }}/url-shortener-backend:${{ github.sha }}
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
@@ -45,8 +45,8 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/url-shortener-frontend:latest
-            ghcr.io/${{ github.repository }}/url-shortener-frontend:${{ github.sha }}
+            ${{ vars.REGISTRY }}/${{ vars.IMAGE_OWNER }}/url-shortener-frontend:latest
+            ${{ vars.REGISTRY }}/${{ vars.IMAGE_OWNER }}/url-shortener-frontend:${{ github.sha }}    
 
   deploy:
     name: Deployment

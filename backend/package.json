@@ -7,7 +7,7 @@
     "start": "node src/server.js",
     "db:init": "node src/db/setup.js",
     "lint": "eslint src --ext .js",
-    "test": "cross-env DATABASE_URL=postgres://urluser:urlpass@localhost:5433/urlshortener jest --runInBand"
+    "test": "jest --runInBand"
   },
   "dependencies": {
     "cors": "^2.8.5",

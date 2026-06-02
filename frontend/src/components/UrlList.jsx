@@ -1,4 +1,5 @@
 import { getBackendBaseUrl } from '../api/apiClient';
+import PropTypes from 'prop-types';
 
 export default function UrlList({ urls, loading, error, onDelete, deletingId }) {
   const backendOrigin = getBackendBaseUrl();
@@ -55,3 +56,11 @@ export default function UrlList({ urls, loading, error, onDelete, deletingId }) 
     </section>
   );
 }
+
+UrlList.propTypes = {
+  urls: PropTypes.array.isRequired,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
+  onDelete: PropTypes.func.isRequired,
+  deletingId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};

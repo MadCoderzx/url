@@ -6,23 +6,13 @@ if (!connectionString) {
   throw new Error('DATABASE_URL must be set in environment');
 }
 
+const isProd = process.env.NODE_ENV === 'production';
+
 const pool = new Pool({
   connectionString,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: isProd
+    ? { rejectUnauthorized: false } // Render / cloud
+    : false // local docker postgres
 });
 
-async function initDb() {
-  const client = await pool.connect();
-  try {
-    await client.query('SELECT 1');
-  } finally {
-    client.release();
-  }
-}
-
-module.exports = {
-  pool,
-  initDb,
-};
+module.exports = { pool };

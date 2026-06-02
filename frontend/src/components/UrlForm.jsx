@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { getBackendBaseUrl } from '../api/apiClient';
 
 export default function UrlForm({ onCreate, createdUrl, error, loading }) {
@@ -10,18 +11,17 @@ export default function UrlForm({ onCreate, createdUrl, error, loading }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    if (!originalUrl.trim()) {
-      return;
-    }
+    if (!originalUrl.trim()) return;
 
     setIsSubmitting(true);
     setSuccessMessage(null);
+
     try {
       const created = await onCreate(originalUrl.trim());
       setSuccessMessage(`Created short URL: ${backendOrigin}/${created.short_code}`);
       setOriginalUrl('');
     } catch {
-      // Error handled by parent
+      // handled by parent
     } finally {
       setIsSubmitting(false);
     }
@@ -38,6 +38,7 @@ export default function UrlForm({ onCreate, createdUrl, error, loading }) {
     <section className="card">
       <h2>Create a Short URL</h2>
       <p>Enter a long URL here and create a short link.</p>
+
       <form onSubmit={handleSubmit}>
         <label>
           Original URL
@@ -49,11 +50,14 @@ export default function UrlForm({ onCreate, createdUrl, error, loading }) {
             required
           />
         </label>
+
         <button type="submit" disabled={isSubmitting || loading || !originalUrl.trim()}>
           {isSubmitting ? 'Creating…' : 'Create URL'}
         </button>
       </form>
+
       {error && <p className="form-error">{error}</p>}
+
       {createdUrl && (
         <div className="created-url">
           <p>
@@ -62,12 +66,23 @@ export default function UrlForm({ onCreate, createdUrl, error, loading }) {
               {backendOrigin}/{createdUrl.short_code}
             </a>
           </p>
+
           <button type="button" className="secondary-button" onClick={handleCopy}>
             Copy link
           </button>
         </div>
       )}
+
       {successMessage && <p className="form-success">{successMessage}</p>}
     </section>
   );
 }
+
+UrlForm.propTypes = {
+  onCreate: PropTypes.func.isRequired,
+  createdUrl: PropTypes.shape({
+    short_code: PropTypes.string,
+  }),
+  error: PropTypes.string,
+  loading: PropTypes.bool,
+};

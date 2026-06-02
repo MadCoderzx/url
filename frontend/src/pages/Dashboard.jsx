@@ -27,3 +27,7 @@ export default function Dashboard({ urls = [] }) {
     </section>
   );
 }
+
+Dashboard.propTypes = {
+  urls: PropTypes.array
+};

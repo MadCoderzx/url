@@ -1,6 +1,6 @@
 const http = require('http');
-const app = require('./app');
 require('./config');
+const app = require('./app');
 const { initDb } = require('./db');
 
 const PORT = process.env.PORT || 4000;

@@ -1,0 +1,411 @@
+Phase 0: Project Setup
+
+Goal: Create the base project.
+
+Structure:
+
+frontend/
+backend/
+database/
+.github/workflows/
+docker-compose.yml
+README.md
+.env.example
+.gitignore
+Commit:
+
+git add .
+git commit -m "Phase 0: initialize project structure"
+
+Phase 1: Minimal Backend
+
+Goal: Create Express API skeleton.
+
+Tasks:
+
+Initialize backend Node project.
+Add Express, CORS, dotenv.
+Add:
+GET /api/health
+Add backend folder structure:
+backend/src/
+  app.js
+  server.js
+  routes/
+  controllers/
+  config/
+  middleware/
+  utils/
+Success criteria:
+
+Backend starts and health route works.
+
+Commit:
+
+git add .
+git commit -m "Phase 1: add backend foundation"
+
+Phase 2: PostgreSQL Database
+
+Goal: Add persistent database storage.
+
+Tables:
+
+urls
+click_events
+Suggested urls fields:
+
+id
+client_id
+original_url
+short_code
+click_count
+created_at
+updated_at
+last_accessed_at
+Suggested click_events fields:
+
+id
+url_id
+clicked_at
+user_agent
+ip_address
+Indexes:
+
+urls.client_id
+urls.short_code
+click_events.url_id
+Success criteria:
+
+Database initializes successfully and backend connects to PostgreSQL.
+
+Commit:
+
+git add .
+git commit -m "Phase 2: add PostgreSQL schema and connection"
+
+Phase 3: URL Shortening API
+
+Goal: Create short URLs without auth.
+
+Routes:
+
+POST /api/urls
+GET /api/urls?clientId=<client_id>
+DELETE /api/urls/:id
+Rules:
+
+POST /api/urls receives:
+
+originalUrl
+clientId
+Backend validates:
+
+valid URL
+non-empty clientId
+Backend generates unique shortCode.
+
+GET /api/urls?clientId= returns only URLs for that browser/device.
+
+DELETE /api/urls/:id should require clientId in query/body/header so one client cannot delete another client’s URL.
+
+Success criteria:
+
+A client can create, list, and delete its own URLs.
+
+Commit:
+
+git add .
+git commit -m "Phase 3: add URL management API"
+
+Phase 4: Redirection and Analytics
+
+Goal: Redirect short links and track clicks.
+
+Route:
+
+GET /:shortCode
+Behavior:
+
+Find matching URL.
+Increment click_count.
+Update last_accessed_at.
+Insert row into click_events.
+Redirect to original URL.
+Return 404 for unknown short code.
+Success criteria:
+
+Short links redirect and analytics update.
+
+Commit:
+
+git add .
+git commit -m "Phase 4: add redirect and analytics tracking"
+
+Phase 5: Backend Tests
+
+Goal: Add tests early so CI has real value.
+
+Tasks:
+
+Add Jest or Vitest.
+Add Supertest.
+Test:
+health route
+URL creation
+URL listing by clientId
+delete ownership by clientId
+redirect route
+unknown short code
+Success criteria:
+
+npm test
+passes for backend.
+
+Commit:
+
+git add .
+git commit -m "Phase 5: add backend tests"
+
+Phase 6: Frontend Foundation
+
+Goal: Create React frontend.
+
+Tasks:
+
+Initialize React app.
+Add API client.
+Add clientId utility:
+If localStorage.clientId exists, use it.
+Otherwise generate a UUID and save it.
+Add main pages/components:
+Home
+UrlForm
+UrlList
+Dashboard
+Success criteria:
+
+Frontend starts and can read/generate clientId.
+
+Commit:
+
+git add .
+git commit -m "Phase 6: add frontend foundation"
+
+Phase 7: Frontend URL Shortening
+
+Goal: Connect UI to backend.
+
+Tasks:
+
+User enters long URL.
+Frontend sends:
+{
+  "originalUrl": "https://example.com/very/long/url",
+  "clientId": "browser-generated-id"
+}
+Display generated short URL.
+Add copy button.
+Refresh list after creation.
+Success criteria:
+
+User can create a short URL from the browser.
+
+Commit:
+
+git add .
+git commit -m "Phase 7: connect frontend URL creation"
+
+Phase 8: Browser-Specific Dashboard
+
+Goal: Show previously created URLs for the same browser/device.
+
+Tasks:
+
+On app load, fetch:
+GET /api/urls?clientId=<clientId>
+Show:
+original URL
+short URL
+click count
+creation date
+last accessed date
+Add delete button.
+Add empty/loading/error states.
+Success criteria:
+
+Same browser can reopen the app and see old URLs. Different browser/device sees a different list.
+
+Commit:
+
+git add .
+git commit -m "Phase 8: add browser-specific URL dashboard"
+
+Phase 9: Dockerization
+
+Goal: Containerize app and database.
+
+Tasks:
+
+Add backend Dockerfile.
+Add frontend Dockerfile.
+Add PostgreSQL service in Docker Compose.
+Add database volume.
+Add internal network.
+Add environment variables.
+Confirm:
+docker compose up --build
+starts frontend, backend, and database.
+
+Commit:
+
+git add .
+git commit -m "Phase 9: dockerize application stack"
+
+Phase 10: CI Workflow
+
+Goal: Add GitHub Actions continuous integration.
+
+Create:
+
+.github/workflows/ci.yml
+Run on:
+
+push
+pull_request
+CI tasks:
+
+Checkout repository.
+Set up Node.js.
+Install backend dependencies.
+Run backend lint.
+Run backend tests.
+Install frontend dependencies.
+Run frontend lint.
+Build frontend.
+Optionally build Docker images.
+Success criteria:
+
+CI passes on GitHub.
+
+Commit:
+
+git add .
+git commit -m "Phase 10: add continuous integration workflow"
+
+Phase 11: Test Database in CI
+
+Goal: Make backend tests run against PostgreSQL in GitHub Actions.
+
+Tasks:
+
+Add PostgreSQL service to ci.yml.
+Set test database environment variables.
+Run schema setup before tests.
+Ensure backend tests do not depend on local machine state.
+Success criteria:
+
+Backend tests pass inside GitHub Actions using PostgreSQL service.
+
+Commit:
+
+git add .
+git commit -m "Phase 11: add PostgreSQL service to CI"
+
+Phase 12: Docker Image Publishing
+
+Goal: Build and push Docker images.
+
+Create:
+
+.github/workflows/cd.yml
+Tasks:
+
+Trigger on push to main after CI.
+Log in to GitHub Container Registry.
+Build backend Docker image.
+Build frontend Docker image.
+Push images with tags:
+latest
+commit SHA
+Success criteria:
+
+Images appear in GitHub Container Registry.
+
+Commit:
+
+git add .
+git commit -m "Phase 12: add Docker image publishing workflow"
+
+Phase 13: Deployment Workflow
+
+Goal: Add deployment step.
+
+For a beginner-friendly project, deployment can be one of these:
+
+Option A: Deploy to a VPS using SSH and docker compose
+Option B: Deploy to Render/Railway/Fly.io
+Option C: Mock deployment step for CI/CD demonstration
+Recommended for learning:
+
+Start with Option C, then document how to replace it with a real server.
+Tasks:
+
+Add deployment job after image publishing.
+Use GitHub Environments.
+Require secrets for real deploy:
+DEPLOY_HOST
+DEPLOY_USER
+DEPLOY_KEY
+DATABASE_URL
+Add mock deploy script or echo step if no real server is available.
+Success criteria:
+
+CD workflow shows successful deployment stage.
+
+Commit:
+
+git add .
+git commit -m "Phase 13: add deployment workflow"
+
+Phase 14: CI/CD Hardening
+
+Goal: Make the pipeline more professional.
+
+Tasks:
+
+Add dependency caching.
+Split CI into backend and frontend jobs.
+Add Docker build job.
+Add deployment only on main.
+Add branch protection notes.
+Add environment variable documentation.
+Add status badges to README.
+Add failure troubleshooting section.
+Commit:
+
+git add .
+git commit -m "Phase 14: harden CI/CD pipeline"
+
+Phase 15: Documentation and Final Review
+
+Goal: Make the project presentation-ready.
+
+README should include:
+
+Project overview.
+Why there is no auth.
+How browser-specific persistence works.
+Architecture diagram.
+Database schema.
+Local setup.
+Docker setup.
+CI workflow explanation.
+CD workflow explanation.
+Rollback strategy.
+Troubleshooting.
+Learning outcomes.
+Commit:
+
+git add .
+git commit -m "Phase 15: add final documentation"

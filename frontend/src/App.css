@@ -70,7 +70,75 @@
   background: #1d4ed8;
   color: #fff;
   font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.card button:disabled {
+  background: #94a3b8;
   cursor: not-allowed;
+}
+
+.secondary-button {
+  background: #64748b;
+}
+
+.form-error {
+  color: #b91c1c;
+  margin-top: 0.75rem;
+}
+
+.form-success {
+  color: #15803d;
+  margin-top: 0.75rem;
+}
+
+.created-url {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+}
+
+.url-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.url-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+  flex-wrap: wrap;
+}
+
+.url-item p {
+  margin: 0.5rem 0 0;
+  color: #475569;
+}
+
+.url-meta {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  color: #475569;
+  font-size: 0.92rem;
+}
+
+.url-actions {
+  display: grid;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.click-count {
+  font-weight: 700;
+  color: #334155;
 }
 
 .placeholder-list {

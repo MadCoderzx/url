@@ -1,4 +1,11 @@
-export default function Dashboard() {
+export default function Dashboard({ urls = [] }) {
+  const totalClicks = urls.reduce((sum, url) => sum + (url.click_count || 0), 0);
+  const lastAccessed = urls
+    .map((url) => url.last_accessed_at)
+    .filter(Boolean)
+    .sort()
+    .reverse()[0];
+
   return (
     <section className="card dashboard-card">
       <h2>Dashboard</h2>
@@ -6,15 +13,15 @@ export default function Dashboard() {
       <div className="dashboard-summary">
         <div>
           <strong>Total URLs</strong>
-          <span>0</span>
+          <span>{urls.length}</span>
         </div>
         <div>
           <strong>Total Clicks</strong>
-          <span>0</span>
+          <span>{totalClicks}</span>
         </div>
         <div>
           <strong>Last Accessed</strong>
-          <span>—</span>
+          <span>{lastAccessed ? new Date(lastAccessed).toLocaleString() : '—'}</span>
         </div>
       </div>
     </section>

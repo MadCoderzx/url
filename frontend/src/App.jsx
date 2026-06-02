@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { getClientId } from './utils/clientId';
 import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
 import './App.css';
 
 function App() {
@@ -18,8 +17,7 @@ function App() {
       </header>
 
       <main>
-        <Home />
-        <Dashboard />
+        <Home clientId={clientId} />
       </main>
     </div>
   );

@@ -14,6 +14,7 @@ jobs:
   build-and-publish:
     name: Build and publish Docker images
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,6 +29,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # ---------------- BACKEND ----------------
       - name: Build and push backend image
         uses: docker/build-push-action@v5
         with:
@@ -35,9 +37,10 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/url-shortener-backend:latest
-            ghcr.io/${{ github.repository }}/url-shortener-backend:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner@lower }}/url-shortener-backend:latest
+            ghcr.io/${{ github.repository_owner@lower }}/url-shortener-backend:${{ github.sha }}
 
+      # ---------------- FRONTEND ----------------
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
@@ -45,14 +48,15 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/url-shortener-frontend:latest
-            ghcr.io/${{ github.repository }}/url-shortener-frontend:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner@lower }}/url-shortener-frontend:latest
+            ghcr.io/${{ github.repository_owner@lower }}/url-shortener-frontend:${{ github.sha }}
 
   deploy:
     name: Deployment
     needs: build-and-publish
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -61,7 +65,10 @@ jobs:
         run: |
           if [[ -n "${{ secrets.DEPLOY_HOST }}" && -n "${{ secrets.DEPLOY_USER }}" && -n "${{ secrets.DEPLOY_KEY }}" ]]; then
             echo "Deploying to ${{ secrets.DEPLOY_HOST }}"
-            # Add actual deployment commands here, e.g. SSH + docker compose pull && docker compose up -d
+            # Example:
+            # ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            # "docker pull ghcr.io/${{ github.repository_owner }}/url-shortener-backend:latest &&
+            #  docker compose up -d"
           else
             echo "Deployment secrets not configured. Skipping actual deploy."
           fi

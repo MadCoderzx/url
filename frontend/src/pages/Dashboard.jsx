@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export default function Dashboard({ urls = [] }) {
   const totalClicks = urls.reduce((sum, url) => sum + (url.click_count || 0), 0);
   const lastAccessed = urls

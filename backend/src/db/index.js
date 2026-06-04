@@ -11,8 +11,16 @@ const isProd = process.env.NODE_ENV === 'production';
 const pool = new Pool({
   connectionString,
   ssl: isProd
-    ? { rejectUnauthorized: false } // Render / cloud
-    : false // local docker postgres
+    ? { rejectUnauthorized: false }
+    : false
 });
 
-module.exports = { pool };
+async function initDb() {
+  await pool.query('SELECT 1');
+  console.log('PostgreSQL connected');
+}
+
+module.exports = {
+  pool,
+  initDb
+};

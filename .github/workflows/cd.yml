@@ -49,19 +49,20 @@ jobs:
             ${{ vars.REGISTRY }}/${{ vars.IMAGE_OWNER }}/url-shortener-frontend:${{ github.sha }}    
 
   deploy:
-    name: Deployment
-    needs: build-and-publish
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Deploy or mock deployment
-        run: |
-          if [[ -n "${{ secrets.DEPLOY_HOST }}" && -n "${{ secrets.DEPLOY_USER }}" && -n "${{ secrets.DEPLOY_KEY }}" ]]; then
-            echo "Deploying to ${{ secrets.DEPLOY_HOST }}"
-            # Add actual deployment commands here, e.g. SSH + docker compose pull && docker compose up -d
-          else
-            echo "Deployment secrets not configured. Skipping actual deploy."
-          fi
+      name: Deploy to Render
+      needs: build-and-publish
+      runs-on: ubuntu-latest
+      steps:
+        - name: Trigger backend deploy on Render
+          run: |
+            curl -s "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}" \
+              --fail \
+              -o /dev/null \
+              -w "Backend deploy triggered: HTTP %{http_code}\n"
+  
+        - name: Trigger frontend deploy on Render
+          run: |
+            curl -s "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}" \
+              --fail \
+              -o /dev/null \
+              -w "Frontend deploy triggered: HTTP %{http_code}\n"

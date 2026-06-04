@@ -1,8 +1,5 @@
 # URL Shortener
 
-![CI](https://github.com/<your-org>/<your-repo>/actions/workflows/ci.yml/badge.svg)
-![CD](https://github.com/<your-org>/<your-repo>/actions/workflows/cd.yml/badge.svg)
-
 A URL shortening service with frontend, backend, PostgreSQL, and CI/CD pipeline.
 
 ## Structure

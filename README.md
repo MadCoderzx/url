@@ -1,46 +1,103 @@
-# URL Shortener
+# CI/CD with GitHub Actions
 
-A URL shortening service with frontend, backend, PostgreSQL, and CI/CD pipeline.
+A learning project to understand and实践 GitHub Actions for CI/CD pipelines.
 
-## Structure
+## Overview
 
-- `frontend/` — React application
-- `backend/` — Express API
-- `database/` — database scripts and migrations
-- `.github/workflows/` — CI/CD workflows
-- `docker-compose.yml` — local development containers
-- `.env.example` — environment variable examples
+This project demonstrates a complete CI/CD pipeline using GitHub Actions:
 
-## Local development
+- **CI (Continuous Integration)**: Runs on every push and pull request to `main` branch
+- **CD (Continuous Deployment)**: Runs on every push to `main` to build and deploy Docker images
 
-1. Copy `.env.example` to `backend/.env` or create `backend/.env` with the backend variables from `.env.example`.
-2. Start PostgreSQL, backend, and frontend containers:
+## Learning Objectives
+
+By exploring this project, you'll learn:
+
+1. **CI Pipeline Design**
+   - Running tests on multiple environments (backend + frontend)
+   - Service dependency management (PostgreSQL)
+   - Caching strategies for dependency installation
+   - Test coverage and linting
+
+2. **CD Pipeline Design**
+   - Docker image building with Buildx
+   - GitHub Container Registry (GHCR) integration
+   - Multi-stage builds and image tagging strategies
+   - Deployment automation via webhooks
+
+3. **GitHub Actions Best Practices**
+   - Job dependencies (`needs:`)
+   - Environment variables and secrets
+   - Reusable workflows and actions
+   - Runner selection and services
+
+## Project Structure
+
+| Directory/File | Purpose |
+|----------------|---------|
+| `backend/` | Express API application |
+| `frontend/` | React application |
+| `database/` | PostgreSQL migrations and schema |
+| `.github/workflows/ci.yml` | CI pipeline definition |
+| `.github/workflows/cd.yml` | CD pipeline definition |
+| `docker-compose.yml` | Local development setup |
+
+## CI Pipeline (`.github/workflows/ci.yml`)
+
+### Triggers
+- Push to `main` branch
+- Pull requests to `main` branch
+
+### Jobs
+| Job | Description |
+|-----|-------------|
+| `backend` | Lint, test, and database setup for Express API |
+| `frontend` | Lint and build React application |
+
+### Key Concepts
+- **Services**: PostgreSQL container for backend testing
+- **Caching**: `actions/cache@v4` for `node_modules`
+- **Dependencies**: `npm ci` for reproducible builds
+
+## CD Pipeline (`.github/workflows/cd.yml`)
+
+### Triggers
+- Push to `main` branch only
+
+### Jobs
+| Job | Description |
+|-----|-------------|
+| `build-and-publish` | Build and push Docker images to GHCR |
+| `deploy` | Trigger deployments via webhooks |
+
+### Key Concepts
+- **Docker Buildx**: Advanced build capabilities
+- **GitHub Packages**: Container registry integration
+- **Image Tagging**: `latest` + `sha` for versioning
+- **Webhook Deployment**: External service integration
+
+## Required Secrets and Variables
+
+| Type | Name | Purpose |
+|------|------|---------|
+| `secrets` | `GITHUB_TOKEN` | Automatic authentication for GHCR |
+| `secrets` | `RENDER_BACKEND_DEPLOY_HOOK` | Render deployment webhook for backend |
+| `secrets` | `RENDER_FRONTEND_DEPLOY_HOOK` | Render deployment webhook for frontend |
+| `variables` | `REGISTRY` | Container registry path |
+| `variables` | `IMAGE_OWNER` | Container image owner |
+| `variables` | `VITE_API_BASE_URL` | Frontend build-time environment |
+
+## Running Locally
 
 ```bash
-cd a:/intern/url
 docker compose up --build
 ```
 
-3. Open the frontend at `http://localhost:3000` and the backend API at `http://localhost:4000`.
+- Frontend: http://localhost:3000
+- Backend: http://localhost:4000
 
-## Dockerization
+## GitHub Actions Resources
 
-- `backend/Dockerfile` builds the Express API image.
-- `frontend/Dockerfile` builds the React app and serves it with Nginx.
-- `docker-compose.yml` now includes `postgres`, `backend`, and `frontend` services.
-
-## CI/CD
-
-- `.github/workflows/ci.yml` runs backend lint, backend tests, frontend lint, and frontend build.
-- `.github/workflows/cd.yml` builds and publishes backend and frontend Docker images to GitHub Container Registry.
-- Deployment is modeled in `cd.yml`; it performs a mock deploy when deployment secrets are not configured.
-
-## Environment variables
-
-- `DATABASE_URL` — Postgres connection string used by the backend.
-- `VITE_API_BASE_URL` — API endpoint used by the frontend build.
-
-## Notes
-
-- The project is browser-specific: each client is identified by a persistent `clientId` saved in local storage.
-- Database schema is defined in `database/init.sql` and initialized by `backend/src/db/setup.js`.
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Workflow Syntax Reference](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions)
+- [Available Actions](https://github.com/actions)

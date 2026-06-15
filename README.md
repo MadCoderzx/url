@@ -1,6 +1,12 @@
 # CI/CD with GitHub Actions
 
-A learning project to understand and实践 GitHub Actions for CI/CD pipelines.
+**Intern ID:** CITS706  
+**Intern Name:** Mohammad Arif  
+**Duration:** 1 Week  
+**Project Name:** URL Shortner  
+**Project Scope:** CI/CD with Github Actions  
+
+A learning project to understand and GitHub Actions for CI/CD pipelines.
 
 ## Overview
 

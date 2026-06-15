@@ -107,3 +107,9 @@ docker compose up --build
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Workflow Syntax Reference](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions)
 - [Available Actions](https://github.com/actions)
+
+## Screenshots
+
+| Home | Dashboard |
+|-------|-----------|
+| ![Home](screenshots/home.png) | ![Dashboard](screenshots/dashboard.png) |
